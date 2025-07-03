@@ -132,11 +132,12 @@ const AddNeighborhoodForm = () => {
             publicTransport: parseFloat(society.publicTransport)
           }))
         };
-        const res = await fetch('${API_URL}/api/places', {
+        const res = await fetch(`${API_URL}/api/places`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestData)
         });
+
         if (res.ok) {
           setSuccess(true);
           setFormData({
