@@ -10,7 +10,6 @@ const ratingCategories = [
   { key: 'publicTransport', label: 'Public Transport' },
 ];
 
-// Add a helper function for formatting
 function formatRupees(amount) {
   if (isNaN(amount)) return amount;
   return `Rs. ${Number(amount).toLocaleString('en-IN')}`;
@@ -20,13 +19,15 @@ export default function PlaceSocieties() {
   const { place, setPlace, result, setResult, loading, setLoading, error, setError } = useContext(SearchContext);
   const navigate = useNavigate();
 
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setResult(null);
     try {
-      const res = await fetch(`http://genuine-motivation-production-add9.up.railway.app/api/places/${encodeURIComponent(place)}`);
+      const res = await fetch(`${API_URL}/api/places/${encodeURIComponent(place)}`);
       if (res.ok) {
         const data = await res.json();
         setResult(data);
@@ -52,7 +53,7 @@ export default function PlaceSocieties() {
         <h2 className="text-2xl sm:text-3xl font-bold gradient-text mb-2">Search Place</h2>
         <p className="text-sm sm:text-base text-gray-600">Enter a place name to see all societies and their ratings</p>
       </div>
-      
+
       <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
         <input
           type="text"
@@ -66,19 +67,18 @@ export default function PlaceSocieties() {
           {loading ? 'Searching...' : 'Search'}
         </button>
       </form>
-      
+
       {error && (
         <div className="mb-4 p-3 sm:p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm sm:text-base">
           {error}
         </div>
       )}
-      
+
       {result && (
         <div>
           <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-center">Societies in {result.name}</h3>
           {result.societies && result.societies.length > 0 ? (
             <div className="space-y-4">
-              {/* Mobile Cards View */}
               <div className="block sm:hidden">
                 {result.societies.map((soc, idx) => (
                   <div
@@ -99,8 +99,7 @@ export default function PlaceSocieties() {
                   </div>
                 ))}
               </div>
-              
-              {/* Desktop Table View */}
+
               <div className="hidden sm:block overflow-x-auto">
                 <table className="min-w-full bg-white/80 rounded-lg shadow">
                   <thead>
@@ -113,7 +112,6 @@ export default function PlaceSocieties() {
                   </thead>
                   <tbody>
                     {result.societies.map((soc, idx) => {
-                      // Find the highest rated category (excluding costOfLiving)
                       const ratingKeys = ['safetyRating', 'greenSpaces', 'nightlife', 'publicTransport'];
                       let highestKey = ratingKeys[0];
                       ratingKeys.forEach(key => {
@@ -122,11 +120,7 @@ export default function PlaceSocieties() {
                       const highestLabel = ratingCategories.find(cat => cat.key === highestKey)?.label || '';
                       return (
                         <tr key={idx} className="border-t border-gray-200">
-                          <td
-                            className="px-4 py-3 font-medium text-gray-800"
-                          >
-                            {soc.name}
-                          </td>
+                          <td className="px-4 py-3 font-medium text-gray-800">{soc.name}</td>
                           <td className="px-4 py-3 text-center">
                             <span className="font-semibold text-green-600 whitespace-nowrap">{formatRupees(soc.costOfLiving)}</span>
                           </td>
@@ -155,4 +149,4 @@ export default function PlaceSocieties() {
       )}
     </div>
   );
-} 
+}

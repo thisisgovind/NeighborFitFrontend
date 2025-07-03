@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const AddNeighborhoodForm = () => {
   const [formData, setFormData] = useState({
@@ -76,7 +77,7 @@ const AddNeighborhoodForm = () => {
     setLoading(true);
     try {
       // Check if place exists
-      const checkRes = await fetch(`http://genuine-motivation-production-add9.up.railway.app/api/places/${encodeURIComponent(formData.placeName)}`);
+      const checkRes = await fetch(`${API_URL}/api/places/${encodeURIComponent(formData.placeName)}`);
       if (checkRes.ok) {
         // Place exists, add each society to it
         let allSuccess = true;
@@ -89,7 +90,7 @@ const AddNeighborhoodForm = () => {
             nightlife: parseFloat(society.nightlife),
             publicTransport: parseFloat(society.publicTransport)
           };
-          const addSocietyRes = await fetch(`http://genuine-motivation-production-add9.up.railway.app/api/places/${encodeURIComponent(formData.placeName)}/societies`, {
+          const addSocietyRes = await fetch(`${API_URL}/api/places/${encodeURIComponent(formData.placeName)}/societies`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(societyData)
@@ -131,7 +132,7 @@ const AddNeighborhoodForm = () => {
             publicTransport: parseFloat(society.publicTransport)
           }))
         };
-        const res = await fetch('http://genuine-motivation-production-add9.up.railway.app/api/places', {
+        const res = await fetch('${API_URL}/api/places', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestData)
