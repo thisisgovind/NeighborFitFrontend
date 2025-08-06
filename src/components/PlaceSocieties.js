@@ -27,7 +27,8 @@ export default function PlaceSocieties() {
     setError('');
     setResult(null);
     try {
-      const res = await fetch(`${API_URL}/api/places/${encodeURIComponent(place)}`);
+      const trimmedPlace = place.trim();
+      const res = await fetch(`${API_URL}/api/places/${encodeURIComponent(trimmedPlace)}`);
       if (res.ok) {
         const data = await res.json();
         setResult(data);
@@ -61,6 +62,7 @@ export default function PlaceSocieties() {
           placeholder="Enter place name (e.g., Greater Noida)"
           value={place}
           onChange={e => setPlace(e.target.value)}
+          onBlur={e => setPlace(e.target.value.trim())}
           required
         />
         <button type="submit" className="btn-primary min-w-[120px] sm:min-w-[140px]" disabled={loading}>

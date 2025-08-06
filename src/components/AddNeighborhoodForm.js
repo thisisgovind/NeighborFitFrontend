@@ -77,7 +77,8 @@ const AddNeighborhoodForm = () => {
     setLoading(true);
     try {
       // Check if place exists
-      const checkRes = await fetch(`${API_URL}/api/places/${encodeURIComponent(formData.placeName)}`);
+      const trimmedPlaceName = formData.placeName.trim();
+      const checkRes = await fetch(`${API_URL}/api/places/${encodeURIComponent(trimmedPlaceName)}`);
       if (checkRes.ok) {
         // Place exists, add each society to it
         let allSuccess = true;
@@ -90,7 +91,7 @@ const AddNeighborhoodForm = () => {
             nightlife: parseFloat(society.nightlife),
             publicTransport: parseFloat(society.publicTransport)
           };
-          const addSocietyRes = await fetch(`${API_URL}/api/places/${encodeURIComponent(formData.placeName)}/societies`, {
+          const addSocietyRes = await fetch(`${API_URL}/api/places/${encodeURIComponent(trimmedPlaceName)}/societies`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(societyData)
@@ -121,7 +122,7 @@ const AddNeighborhoodForm = () => {
       } else {
         // Place does not exist, create new place as before
         const requestData = {
-          name: formData.placeName,
+          name: trimmedPlaceName,
           societies: formData.societies.map(society => ({
             name: society.name,
             description: society.description,
@@ -205,6 +206,7 @@ const AddNeighborhoodForm = () => {
               placeholder="e.g., Greater Noida, Metro City"
               value={formData.placeName}
               onChange={handleChange}
+              onBlur={e => setFormData(prev => ({ ...prev, placeName: e.target.value.trim() }))}
               className="input-field"
               required
             />
